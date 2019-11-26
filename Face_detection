@@ -1,0 +1,58 @@
+#if opencv is not installed:
+#pip install opencv-python
+
+import cv2
+import numpy as np
+from matplotlib import pyplot as plt
+%matplotlib inline
+import urllib  #if you are using image from web
+
+#if image is from any webpage then use this
+#img_url = "https://cdn.tinybuddha.com/wp-content/uploads/2015/10/Having-Fun.png"
+#img_nm = "name.jpg"
+#urllib.request.urlretrieve(img_url, img_nm)
+
+#if it is in your computer, skip step 10-12
+im_show = cv2.imread("name.jpg")
+plt.imshow(im_show)
+
+#convert color of image
+img_clr = cv2.cvtColor(im_show, cv2.COLOR_BGR2RGB)
+
+plt.axis("off") #clear axis of the image
+plt.imshow(img_clr)
+
+#getting haarcascade data from git
+haarcascade_url = "https://xyz/haarcascade_frontalface_default.xml"
+haar_name = "haarcascade_frontalface_default.xml"
+urllib.request.urlretrieve(haarcascade_url, haar_name)
+
+#create model for face detection
+classifier = cv2.CascadeClassifier(haar_name)
+
+#detect the face
+face_chk = classifier.detectMultiScale(img_corrected)
+print(face_chk)
+
+#draw rectangle on detected faces
+for (x, y, w, h) in face_chk:
+    cv2.rectangle(face_chk, (x, y), (x+w, y+h), (0, 255, 0), 3) 
+
+plt.imshow(face_chk)
+
+#create a function to avoid repetition 
+def face_detector(haarcascade, inp_img, scaleFactor = 1.1):
+    wrk_img = np.copy(inp_img)
+    
+    faces_dec = haarcascade.detectMultiScale(wrk_img, scaleFactor=scaleFactor, minNeighbors=5);
+    
+    #now draw them as rectangles on input image
+    for (x, y, w, h) in faces_dec:
+        cv2.rectangle(wrk_img, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        
+    return wrk_img
+    
+
+#now use this func
+detected_face_img = face_detector(face_chk, new_image)
+plt.imshow(detected_face_img)
